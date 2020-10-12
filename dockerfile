@@ -9,4 +9,4 @@
 #WORKDIR /home/user
 #RUN mvn package
 FROM nginx
-COPY /home/zloben/index.html /usr/share/nginx/html
+ADD /home/zloben/index.html /usr/share/nginx/html
