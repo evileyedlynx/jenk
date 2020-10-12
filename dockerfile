@@ -9,4 +9,6 @@
 #WORKDIR /home/user
 #RUN mvn package
 FROM nginx
-ADD /home/zloben/index.html /usr/share/nginx/html
+RUN apt update
+RUN apt install git -y
+#ADD /home/zloben/index.html /usr/share/nginx/html
