@@ -1,12 +1,7 @@
 pipeline {
-    agent any
-//    tools {
-//        docker "dock1"
-//        }
     stages {
         stage ('build the artifact') {
-            agent {
-                docker {
+            agent docker {
                     image "tomcat:9.0"
                     args "-v /var/run/docker.sock:/var/run/docker.sock"
                     label "myimg"
