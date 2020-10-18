@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent docker
     stages {
         stage ('build the artifact') {
             agent {
@@ -7,7 +7,7 @@ pipeline {
                     image "tomcat:9.0"
                     args "-v /var/run/docker.sock:/var/run/docker.sock"
                     label "myimg"
-                
+                }
                 steps {
                     sh 'apt update -y'
                     sh 'apt install git -y'
@@ -23,5 +23,4 @@ pipeline {
         }
 
     }   
-}
 }
