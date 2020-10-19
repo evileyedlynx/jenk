@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-                    image "maven:latest"
-                    args "-v /var/run/docker.sock:/var/run/docker.sock"
+                    image 'maven:latest'
+                    args '-v /var/run/docker.sock:/var/run/docker.sock'
                     }
     }
     stages {
