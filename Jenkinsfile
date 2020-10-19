@@ -1,12 +1,17 @@
 pipeline {
-    agent any
-    stages {
-        stage ('build the artifact') {
-            agent {
-                docker {
+    agent {
+        docker {
                     image "tomcat:9.0"
                     args "-v /var/run/docker.sock:/var/run/docker.sock"
                     }
+    }
+    stages {
+        stage ('build the artifact') {
+//            agent {
+//                docker {
+//                    image "tomcat:9.0"
+//                    args "-v /var/run/docker.sock:/var/run/docker.sock"
+//                    }
                 steps {
                     sh 'apt update -y'
                     sh 'apt install git -y'
@@ -19,5 +24,4 @@ pipeline {
             }
         }
 
-    }   
-}
+    }
