@@ -15,14 +15,14 @@ pipeline {
 //                    sh 'apt update -y'
 //                    sh 'apt install git -y'
                     git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello.git'
-                    sh 'mvn package -f /boxfuse-sample-java-war-hello/pom.xml'
+                    sh 'mvn package -f /var/lib/jenkins/workspace/Pipe_build/boxfuse-sample-java-war-hello/pom.xml'
                 }
         
             }
         stage ('build container') {
             steps {
                 sh 'mkdir /home/warr/'
-                sh 'cp /boxfuse-sample-java-war-hello/target/*.war /home/warr/'
+                sh 'cp /var/lib/jenkins/workspace/Pipe_build/boxfuse-sample-java-war-hello/target/*.war /home/warr/'
                 sh 'docker build -t prod-image https://github.com/evileyedlynx/jenk.git#main'
             }
         }
