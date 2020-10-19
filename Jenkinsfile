@@ -23,7 +23,7 @@ pipeline {
             steps {
                 sh 'mkdir /home/warr/'
                 sh 'cp /boxfuse-sample-java-war-hello/target/*.war /home/warr/'
-                sh 'docker build https://github.com/evileyedlynx/jenk.git#main'
+                sh 'docker build -t prod-image https://github.com/evileyedlynx/jenk.git#main'
             }
         }
     }
