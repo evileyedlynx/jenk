@@ -29,13 +29,13 @@
     add_host: name={{ ec2tom.instances }} groups=ec2tom
 
 - name: prepare docker environment
-    tasks:
-      - name: Install required apt system packages
-        apt: name={{ item }} state=latest update_cache=yes
-        loop: [ 'python3-pip', 'python3-setuptools', 'python-pip', 'python-setuptools', 'docker.io' ]
-      - name: Install Docker Module for Python
-        pip:
-          name: docker
+  tasks:
+    - name: Install required apt system packages
+      apt: name={{ item }} state=latest update_cache=yes
+      loop: [ 'python3-pip', 'python3-setuptools', 'python-pip', 'python-setuptools', 'docker.io' ]
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
 
 - name: build artefact
   hosts: ec2mav
