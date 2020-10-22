@@ -47,6 +47,7 @@
     loop: "{{ ec2tom.instances }}"
 
 - name: prepare docker environment
+  hosts: ec2tom:ec2mav
   tasks:
     - name: Install required apt system packages
       apt: name={{ item }} state=latest update_cache=yes
