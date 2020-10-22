@@ -18,6 +18,9 @@
       wait: yes
     register: ec2mav
 
+  - name: Add builder instance public IP to host group
+    add_host: name={{ ec2mav.instances }} groups=ec2mav
+
   - name: make a prod instance
     ec2:
       aws_access_key: "{{ec2_access_key}}"
@@ -30,9 +33,6 @@
       wait: yes
     register: ec2tom
 
-  - name: Add builder instance public IP to host group
-#      add_host: hostname={{ item.public_ip }} groups=ec2hosts
-    add_host: name={{ ec2mav.instances }} groups=ec2mav
   - name: Add prod instance public IP to host group
     add_host: name={{ ec2tom.instances }} groups=ec2tom
 
