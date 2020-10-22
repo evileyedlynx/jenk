@@ -1,0 +1,83 @@
+---
+- name: Prepare environment & ec2 instances
+  hosts: localhost
+  gather_facts: False
+  become: yes
+  tasks:
+  - name: make a builder instance
+    ec2:
+      key_name: awv_key
+      group: EC2SecurityGroupNew
+      instance_type: t2.micro
+      image: "{{ ami-0e82959d4ed12de3f }}"
+      wait: true
+    register: ec2mav
+
+  - name: make a builder instance
+    ec2:
+      key_name: awv_key
+      group: EC2SecurityGroupNew
+      instance_type: t2.micro
+      image: "{{ ami-0e82959d4ed12de3f }}"
+      wait: true
+    register: ec2tom
+
+  - name: Add builder instance public IP to host group
+#      add_host: hostname={{ item.public_ip }} groups=ec2hosts
+    add_host: name={{ ec2mav.instances }} groups=ec2mav
+  - name: Add prod instance public IP to host group
+    add_host: name={{ ec2tom.instances }} groups=ec2tom
+
+- name: prepare docker environment
+    tasks:
+      - name: Install required apt system packages
+        apt: name={{ item }} state=latest update_cache=yes
+        loop: [ 'python3-pip', 'python3-setuptools', 'python-pip', 'python-setuptools', 'docker.io' ]
+      - name: Install Docker Module for Python
+        pip:
+          name: docker
+
+- name: build artefact
+  hosts: ec2mav
+  become: yes
+  tasks:
+  - name: git clone to machine
+    git:
+      repo: https://github.com/boxfuse/boxfuse-sample-java-war-hello.git
+      dest: /home/ubuntu/repo/
+  - name: start Maven container
+    docker_container:
+      name: mav
+      image: maven:3.3-jdk-8
+      volumes: 
+      - /home/ubuntu/repo/:/home/user/
+      command: mvn package -f /home/user/pom.xml
+  - name: copy artefact from maven
+    fetch: 
+    #      src: "{{ item }}"
+      src: /home/ubuntu/repo/target/hello-1.0.war
+      dest: /home/ubuntu/
+      flat: yes
+    #    with_fileglob:
+    #      - "/home/ubuntu/repo/*.war"
+    
+  - name: Launch Tomcat
+    hosts: ec2tom
+    become: yes
+    tasks:
+    - name: copy artefact to Tomcat
+      copy:
+    #      src: "{{ item }}"
+        src: /home/ubuntu/hello-1.0.war
+        dest: /home/ubuntu/
+    #    with_fileglob:
+    #      - "/home/ubuntu/*.war"
+    - name: start Tomcat container
+      docker_container:
+        name: 'tomcat'
+        image: davidcaste/alpine-tomcat:tomcat8
+        volumes: 
+        - /home/ubuntu/:/opt/tomcat/webapps/
+        ports:
+        - "8080:8080"
+        command: /opt/tomcat/bin/catalina.sh run
