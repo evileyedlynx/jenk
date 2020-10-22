@@ -61,23 +61,23 @@
     #    with_fileglob:
     #      - "/home/ubuntu/repo/*.war"
     
-  - name: Launch Tomcat
-    hosts: ec2tom
-    become: yes
-    tasks:
-    - name: copy artefact to Tomcat
-      copy:
+- name: Launch Tomcat
+  hosts: ec2tom
+  become: yes
+  tasks:
+  - name: copy artefact to Tomcat
+    copy:
     #      src: "{{ item }}"
-        src: /home/ubuntu/hello-1.0.war
-        dest: /home/ubuntu/
+      src: /home/ubuntu/hello-1.0.war
+      dest: /home/ubuntu/
     #    with_fileglob:
     #      - "/home/ubuntu/*.war"
-    - name: start Tomcat container
-      docker_container:
-        name: 'tomcat'
-        image: davidcaste/alpine-tomcat:tomcat8
-        volumes: 
-        - /home/ubuntu/:/opt/tomcat/webapps/
-        ports:
-        - "8080:8080"
-        command: /opt/tomcat/bin/catalina.sh run
+  - name: start Tomcat container
+    docker_container:
+      name: 'tomcat'
+      image: davidcaste/alpine-tomcat:tomcat8
+      volumes: 
+      - /home/ubuntu/:/opt/tomcat/webapps/
+      ports:
+      - "8080:8080"
+      command: /opt/tomcat/bin/catalina.sh run
