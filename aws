@@ -11,6 +11,7 @@
       key_name: awv_key
       group: EC2SecurityGroupNew
       instance_type: t2.micro
+      region: us-east-2
       image: ami-0e82959d4ed12de3f
       wait: true
     register: ec2mav
@@ -20,6 +21,7 @@
       key_name: awv_key
       group: EC2SecurityGroupNew
       instance_type: t2.micro
+      region: us-east-2
       image: ami-0e82959d4ed12de3f
       wait: true
     register: ec2tom
