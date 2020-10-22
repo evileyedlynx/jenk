@@ -18,8 +18,13 @@
       wait: yes
     register: ec2mav
 
-  - name: Add builder instance public IP to host group
-    add_host: hostname="{{ ec2mav.instances }}" groups=ec2mav
+#  - name: Add builder instance public IP to host group
+#    add_host: hostname="{{ ec2mav.instances }}" groups=ec2mav
+  - name: Add new instance to host group
+  add_host:
+    hostname: "{{ item.public_ip }}"
+    groupname: ec2mav
+  loop: "{{ ec2mav.instances }}"
 
   - name: make a prod instance
     ec2:
