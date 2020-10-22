@@ -38,8 +38,13 @@
       wait: yes
     register: ec2tom
 
-  - name: Add prod instance public IP to host group
-    add_host: hostname="{{ ec2tom.instances }}" groups=ec2tom
+#  - name: Add prod instance public IP to host group
+#    add_host: hostname="{{ ec2tom.instances }}" groups=ec2tom
+  - name: Add new instance to host group
+    add_host:
+      hostname: "{{ item.public_ip }}"
+      groupname: ec2tom
+    loop: "{{ ec2tom.instances }}"
 
 - name: prepare docker environment
   tasks:
