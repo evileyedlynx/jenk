@@ -6,11 +6,19 @@
   gather_facts: False
   become: yes
   tasks:
+  - name: make key pair
+    ec2_key:
+      name: aw_key
+      region: us-east-2
+    register: aw_key_var
+  - name: add private key to id_rsa
+    copy: content="{{ aw_key_var.key.private_key }}" dest=".ssh/id_rsa" mode=0600
+    when: aw_key_var.changed
   - name: make a builder instance
     ec2:
       aws_access_key: "{{ec2_access_key}}"
       aws_secret_key: "{{ec2_secret_key}}"
-      key_name: awv_key
+      key_name: aw_key
       group: EC2SecurityGroupNew
       instance_type: t2.micro
       region: us-east-2
@@ -30,7 +38,7 @@
     ec2:
       aws_access_key: "{{ec2_access_key}}"
       aws_secret_key: "{{ec2_secret_key}}"
-      key_name: awv_key
+      key_name: aw_key
       group: EC2SecurityGroupNew
       instance_type: t2.micro
       region: us-east-2
@@ -48,6 +56,9 @@
 
 - name: prepare docker environment
   hosts: ec2tom:ec2mav
+  remote_user: ubuntu
+  become: yes
+  become_user: root
   tasks:
     - name: Install required apt system packages
       apt: name={{ item }} state=latest update_cache=yes
@@ -58,7 +69,9 @@
 
 - name: build artefact
   hosts: ec2mav
+  remote_user: ubuntu
   become: yes
+  become_user: root
   tasks:
   - name: git clone to machine
     git:
@@ -82,7 +95,9 @@
     
 - name: Launch Tomcat
   hosts: ec2tom
+  remote_user: ubuntu
   become: yes
+  become_user: root
   tasks:
   - name: copy artefact to Tomcat
     copy:
